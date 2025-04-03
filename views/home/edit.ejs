@@ -1,0 +1,61 @@
+<%= layout('/layouts/boilerplate') %>
+
+    <div class="container mt-5">
+        <div class="card-body">
+            <h3 class="text-center fw-bold">Edit Plan</h3>
+
+            <form method="POST" action="/mysub/<%= plan._id %>?_method=PUT" novalidate class="needs-validation">
+                <div class="mb-3">
+                    <label class="form-label">Plan Name</label>
+                    <input type="text" class="form-control" name="plan[name]" value="<%= plan.name %>" required />
+                    <div class="invalid-feedback">Please enter the plan name.</div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-control" name="plan[description]" required><%= plan.description %></textarea>
+                    <div class="invalid-feedback">Please enter a description.</div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Subscription Type</label>
+                    <select class="form-select" name="plan[type]" required>
+                        <option value="Premium" <%=plan.type==='Premium' ? 'selected' : '' %>>Premium</option>
+                        <option value="Standard" <%=plan.type==='Standard' ? 'selected' : '' %>>Standard</option>
+                        <option value="Basic" <%=plan.type==='Basic' ? 'selected' : '' %>>Basic</option>
+                    </select>
+                    <div class="invalid-feedback">Please select a subscription type.</div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Price (₹)</label>
+                    <input type="number" class="form-control" name="plan[price]" value="<%= plan.price %>" required min="1" />
+                    <div class="invalid-feedback">Please enter a valid price.</div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Slots Available</label>
+                    <input type="number" class="form-control" name="plan[slots]" value="<%= plan.slots %>" required min="1" />
+                    <div class="invalid-feedback">Please enter the number of slots.</div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Expiry Date</label>
+                    <input type="date" class="form-control" name="plan[expDate]"
+                        value="<%= plan.expDate.toISOString().split('T')[0] %>" required />
+                    <div class="invalid-feedback">Please select an expiry date.</div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Image URL</label>
+                    <input type="url" class="form-control" name="plan[image]" value="<%= plan.image %>" required />
+                    <div class="invalid-feedback">Please enter a valid image URL.</div>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <a href="/mysub" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary fw-bold">Update Plan</button>
+                </div>
+            </form>
+        </div>
+    </div>

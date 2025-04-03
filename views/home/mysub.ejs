@@ -1,0 +1,166 @@
+<%= layout('/layouts/boilerplate') %>
+
+<div class="container mt-3 mb-3">
+  <!-- Button Group -->
+  <div class="d-flex justify-content-center gap-3">
+    <button
+      class="btn btn-primary"
+      data-bs-toggle="collapse"
+      data-bs-target="#multiCollapseExample1"
+      aria-expanded="false"
+      aria-controls="multiCollapseExample1"
+    >
+      My Plans
+    </button>
+  </div>
+
+  <!-- My Plans Section -->
+  <div class="collapse mt-3" id="multiCollapseExample1">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">My Plans</h5>
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+          <% for(let plan of myPlans) { %>
+          <div class="col">
+            <div class="card h-100">
+              <!-- Subscription Image -->
+              <img
+                src="<%= plan.image %>"
+                class="card-img-top"
+                alt="Image loading failed"
+              />
+
+              <div class="card-body">
+                <h5 class="card-title"><%= plan.name %></h5>
+                <p class="card-text">
+                  Slots Available: <strong><%= plan.slots %></strong>
+                </p>
+                <p class="card-text">
+                  Subscription Type: <strong><%= plan.type %></strong>
+                </p>
+                <p class="card-text">
+                  Price per Slot: <strong>₹<%= plan.price %>/month</strong>
+                </p>
+
+                <div class="row">
+                  <div class="col">
+                    <a
+                      href="/mysub/<%= plan._id %>"
+                      class="btn btn-success w-100"
+                      >Edit</a
+                    >
+                  </div>
+                  <div class="col">
+                    <form action="/mysub/<%= plan._id %>?_method=DELETE" method="POST">
+                      <button type="submit" class="btn btn-warning w-100">
+                        Delete
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card-footer">
+                <small class="text-body-secondary">
+                  Expires on:
+                  <strong>
+                    <%= new Date(plan.expDate).toLocaleDateString("en-IN", {
+                    day: 'numeric', month: 'long', year: 'numeric' }) %>
+                  </strong>
+                </small>
+              </div>
+            </div>
+          </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-center gap-3 mt-3">
+    <button
+      class="btn btn-primary"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#multiCollapseExample2"
+      aria-expanded="false"
+      aria-controls="multiCollapseExample2"
+    >
+      Plans I Am Part Of
+    </button>
+  </div>
+
+  <div class="collapse mt-3" id="multiCollapseExample2">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Plans I Am Part Of</h5>
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+          <% for(let plan of joinedPlans) { %>
+            <div class="col">
+              <div class="card h-100">
+                <img
+                  src="<%= plan.image %>"
+                  class="card-img-top"
+                  alt="Image loading failed"
+                />
+  
+                <div class="card-body">
+                  <h5 class="card-title"><%= plan.name %></h5>
+                  <p class="card-text">
+                    Slots Available: <strong><%= plan.slots %></strong>
+                  </p>
+                  <p class="card-text">
+                    Subscription Type: <strong><%= plan.type %></strong>
+                  </p>
+                  <p class="card-text">
+                    Price per Slot: <strong>₹<%= plan.price %>/month</strong>
+                  </p>
+                  <p class="card-text">
+                    Email:- <strong id="email-<%= plan._id %>">*********</strong>
+                  </p>
+                  <p class="card-text">
+                    Password:- <strong id="password-<%= plan._id %>">*********</strong>
+                  </p>
+  
+                  <div class="row">
+                    <div class="col">
+                      <button type="button" class="btn btn-outline-success w-100"
+                        onclick="toggleCredentials('<%= plan._id %>', '<%= plan.email %>', '<%= plan.password %>')">
+                        Show Credentials
+                      </button>
+                    </div>
+                  </div>
+                </div>
+  
+                <div class="card-footer">
+                  <small class="text-body-secondary">
+                    Expires on:
+                    <strong>
+                      <%= new Date(plan.expDate).toLocaleDateString("en-IN", {
+                      day: 'numeric', month: 'long', year: 'numeric' }) %>
+                    </strong>
+                  </small>
+                </div>
+              </div>
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    function toggleCredentials(planId, email, password) {
+      const emailField = document.getElementById(`email-${planId}`);
+      const passwordField = document.getElementById(`password-${planId}`);
+  
+      if (emailField.innerText === "*********") {
+        emailField.innerText = email;
+        passwordField.innerText = password;
+      } else {
+        emailField.innerText = "*********";
+        passwordField.innerText = "*********";
+      }
+    }
+  </script>
+  

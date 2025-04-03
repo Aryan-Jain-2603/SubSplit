@@ -1,0 +1,122 @@
+<% layout("/layouts/boilerplate")%>
+<body>
+  <div class="row">
+    <div class="col-8 offset-2">
+      <br /><br />
+      <h3>Add a Sub</h3>
+      <form
+        method="POST"
+        action="/home"
+        novalidate
+      >
+        <div class="mb-3">
+          <label for="subName" class="form-label">Subscription Name:</label>
+          <input
+            name="sub[name]"
+            placeholder="Enter subscription name"
+            type="text"
+            class="form-control"
+            required
+          />
+          <div class="valid-feedback">Looks good!</div>
+        </div>
+        <div class="mb-3">
+          <label for="subDescription" class="form-label">Description :</label>
+          <input
+            name="sub[description]"
+            placeholder="Enter Description"
+            type="text"
+            class="form-control"
+            required
+          />
+          <div class="invalid-feedback">Please enter some description</div>
+        </div>
+
+        <div class="mb-3">
+          <label for="subscriptionType" class="form-label"
+            >Subscription Type:</label
+          >
+          <select name="sub[type]" class="form-control" required>
+            <option value="" disabled selected>Select type</option>
+            <option value="Basic">Basic</option>
+            <option value="Standard">Standard</option>
+            <option value="Premium">Premium</option>
+          </select>
+          <div class="invalid-feedback">Please select a subscription type.</div>
+        </div>
+
+        <div class="row">
+          <div class="mb-3 col-md-6">
+            <label for="price" class="form-label">Price per Slot:</label>
+            <input
+              name="sub[price]"
+              placeholder="Enter price per slot"
+              type="text"
+              class="form-control"
+              required
+            />
+            <div class="invalid-feedback">Enter a valid price.</div>
+          </div>
+          <div class="mb-3 col-md-6">
+            <label for="slotsAvailable" class="form-label"
+              >Slots Available:</label
+            >
+            <input
+              name="sub[slots]"
+              placeholder="Enter number of slots"
+              type="number"
+              class="form-control"
+              required
+            />
+            <div class="invalid-feedback">Enter valid slot count.</div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="mb-3 col-md-6">
+            <label for="price" class="form-label">Enter Email:</label>
+            <input
+              name="sub[email]"
+              placeholder="enter email"
+              type="email"
+              class="form-control"
+              required
+            />
+            <div class="invalid-feedback">enter a valid email</div>
+          </div>
+          <div class="mb-3 col-md-6">
+            <label for="slotsAvailable" class="form-label"
+              >Enter Password:</label
+            >
+            <input
+              name="sub[password]"
+              placeholder="enter password"
+              type="text"
+              class="form-control"
+              required
+            />
+            <div class="invalid-feedback">Enter valid slot count.</div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="expiryDate" class="form-label"
+            >Subscription Expiry Date:</label
+          >
+          <input name="sub[expDate]" type="date" class="form-control" required />
+          <div class="invalid-feedback">Please select an expiry date.</div>
+        </div>
+
+        <div class="mb-3">
+          <label for="subImage" class="form-label"
+            >Upload Subscription Image URL:</label
+          >
+          <input name="sub[image]" type="String" class="form-control" />
+        </div>
+
+        <button class="btn btn-dark btn-red">Add Subscription</button>
+        <br /><br />
+      </form>
+    </div>
+  </div>
+</body>
