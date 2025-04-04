@@ -6,11 +6,13 @@ module.exports.index = async (req, res) => {
     let plans = await Sub.find().populate("owner", "username");
 
     if (req.isAuthenticated()) {
-      const userId = req.user._id.toString();
+      const user = await User.findById(req.user._id).populate("subscriptions");
+      const joinedPlansIDs = user.subscriptions.map((sub) =>
+        sub._id.toString()
+      );
 
       plans = plans.filter(
-        (plan) =>
-          !plan.members.map((member) => member.toString()).includes(userId)
+        (plan) => !joinedPlansIDs.includes(plan._id.toString())
       );
     }
 
@@ -64,11 +66,13 @@ module.exports.deletePlan = async (req, res) => {
 module.exports.MySubs = async (req, res) => {
   try {
     let myPlansID = req.user.listings;
+
     const myPlans = await Sub.find({ _id: { $in: myPlansID } }).populate(
       "owner"
     );
 
-    let joinedPlans = await Sub.find({ members: req.user._id });
+    const user = await User.findById(req.user._id).populate("subscriptions");
+    let joinedPlans = user.subscriptions;
 
     res.render("./home/mysub.ejs", { myPlans, joinedPlans });
   } catch (err) {
@@ -105,7 +109,7 @@ module.exports.searchPlans = async (req, res) => {
 
   const searchQuery = query.toLowerCase();
 
-  const allPlans = await Sub.find(); 
+  const allPlans = await Sub.find();
 
   const plans = allPlans.filter(
     (plan) =>
@@ -119,4 +123,47 @@ module.exports.searchPlans = async (req, res) => {
   }
 
   res.render("home/index", { plans: plans });
+};
+
+module.exports.joinPlan = async (req, res) => {
+  let { id } = req.params;
+  let plan = await Sub.findById(id).populate("owner");
+
+  if (!plan) {
+    req.flash("error", "Plan not found");
+    return res.redirect("/home");
+  }
+
+  if (plan.owner._id.equals(req.user._id)) {
+    req.flash("error", "You are the owner of this plan!");
+    return res.redirect("/home");
+  }
+
+  if (plan.slots < 1) {
+    req.flash("error", "No more slots left to join ");
+    return res.redirect("/home");
+  }
+
+  plan.slots -= 1;
+  await plan.save();
+
+  let user = await User.findById(req.user._id);
+  if (user.money < plan.price) {
+    req.flash("error", "Insufficient balance in your wallet!");
+    return res.redirect("/home");
+  }
+
+  user.money -= plan.price;
+
+  let owner = await User.findById(plan.owner._id);
+  owner.money += plan.price;
+
+  await user.save();
+  await owner.save();
+
+  user.subscriptions.push(plan._id);
+  await user.save();
+
+  req.flash("success", "Successfully joined the plan!");
+  res.redirect("/home");
 };

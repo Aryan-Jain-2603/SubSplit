@@ -98,44 +98,7 @@ app.put("/mysub/:id", isLoggedIn, isOwner, wrapAsync(SubController.updatePlan));
 
 app.delete("/mysub/:id", isLoggedIn, isOwner, wrapAsync(SubController.deletePlan))
 
-app.get("/join/:id", isLoggedIn, async (req, res) => {
-  try {
-    let { id } = req.params;
-    let plan = await Sub.findById(id);
-
-    if (!plan) {
-      req.flash("error", "Plan not found!");
-      return res.redirect("/home");
-    }
-
-    if (plan.owner.toString() === req.user._id.toString()) {
-      req.flash("error", "You are the owner and cannot join your own plan.");
-      return res.redirect("/home");
-    }
-
-    if (plan.members.includes(req.user._id)) {
-      req.flash("error", "You are already a member of this plan.");
-      return res.redirect("/home");
-    }
-
-    if(plan.slots == 0){
-      req.flash("error", "No more slots left, Please join something else");
-      return res.redirect("/home");
-    }else{
-      plan.slots = plan.slots - 1;
-    }
-
-    plan.members.push(req.user._id);
-    await plan.save();
-
-    req.flash("success", "Successfully joined the plan!");
-    res.redirect("/home");
-  } catch (error) {
-    console.error(error);
-    req.flash("error", "Something went wrong. Please try again.");
-    res.redirect("/home");
-  }
-});
+app.get("/join/:id", isLoggedIn, wrapAsync(SubController.joinPlan));
 
 
 app.get("/profile", isLoggedIn, async(req, res) => {
@@ -150,6 +113,8 @@ app.get("/signup", (req, res) => {
 
 app.post("/signup", wrapAsync(userController.signup));
 
+
+app.post("/add-money", isLoggedIn, wrapAsync(userController.addMoney));
 
 app.get("/login", (req, res) => {
   res.render("./users/login.ejs");

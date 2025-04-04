@@ -35,3 +35,18 @@ module.exports.logout = (req, res, next) => {
     res.redirect("/home");
   });
 };
+
+module.exports.addMoney = async (req, res) => {
+  const { amount } = req.body;
+  if (!amount || amount <= 0) {
+    req.flash("error", "Invalid amount entered!");
+    return res.redirect("/profile");
+  }
+
+  const user = await User.findById(req.user._id);
+  user.money += parseInt(amount);
+  await user.save();
+
+  req.flash("success", `₹${amount} added to your wallet!`);
+  res.redirect("/profile");
+};

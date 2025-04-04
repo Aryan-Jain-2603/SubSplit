@@ -43,10 +43,10 @@ const planSchema = new Schema({
         default: "https://images.ctfassets.net/4cd45et68cgf/4nBnsuPq03diC5eHXnQYx/d48a4664cdc48b6065b0be2d0c7bc388/Netflix-Logo.jpg",
         required: true,
     },
-    members: [{
-        type: Schema.Types.ObjectId,
-        ref: "User",
-    }],
+    // members: [{
+    //     type: Schema.Types.ObjectId,
+    //     ref: "User",
+    // }],
     email:{
         type: String,
         required: true,
