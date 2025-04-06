@@ -16,7 +16,7 @@ module.exports.index = async (req, res) => {
       );
     }
 
-    res.render("./home/index.ejs", { plans });
+    res.render("./home/index.ejs", { plans ,currUser: req.user, razorpayKeyId: process.env.RAZORPAY_KEY_ID});
   } catch (err) {
     console.error(err);
     res.status(500).send("Server error");
@@ -144,14 +144,14 @@ module.exports.joinPlan = async (req, res) => {
     return res.redirect("/home");
   }
 
-  plan.slots -= 1;
-  await plan.save();
-
   let user = await User.findById(req.user._id);
   if (user.money < plan.price) {
     req.flash("error", "Insufficient balance in your wallet!");
     return res.redirect("/home");
   }
+
+  plan.slots -= 1;
+  await plan.save();
 
   user.money -= plan.price;
 

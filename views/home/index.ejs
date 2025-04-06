@@ -53,17 +53,39 @@
       <div class="container mt-4">
         <h4 class="mb-3">Popular Subscriptions</h4>
         <div class="list-group">
-          <a href="/search?query=Netflix" class="list-group-item list-group-item-action">Netflix</a>
-          <a href="/search?query=Amazon Prime" class="list-group-item list-group-item-action"
+          <a
+            href="/search?query=Netflix"
+            class="list-group-item list-group-item-action"
+            >Netflix</a
+          >
+          <a
+            href="/search?query=Amazon Prime"
+            class="list-group-item list-group-item-action"
             >Amazon Prime</a
           >
-          <a href="/search?query=Disney+" class="list-group-item list-group-item-action">Disney+</a>
-          <a href="/search?query=Hulu" class="list-group-item list-group-item-action">Hulu</a>
-          <a href="/search?query=Spotify" class="list-group-item list-group-item-action">Spotify</a>
-          <a href="/search?query=YouTube Premium" class="list-group-item list-group-item-action"
+          <a
+            href="/search?query=Disney+"
+            class="list-group-item list-group-item-action"
+            >Disney+</a
+          >
+          <a
+            href="/search?query=Hulu"
+            class="list-group-item list-group-item-action"
+            >Hulu</a
+          >
+          <a
+            href="/search?query=Spotify"
+            class="list-group-item list-group-item-action"
+            >Spotify</a
+          >
+          <a
+            href="/search?query=YouTube Premium"
+            class="list-group-item list-group-item-action"
             >YouTube Premium</a
           >
-          <a href="/search?query=Apple Music" class="list-group-item list-group-item-action"
+          <a
+            href="/search?query=Apple Music"
+            class="list-group-item list-group-item-action"
             >Apple Music</a
           >
         </div>
@@ -125,11 +147,14 @@
           <p class="text-muted mb-1">
             Owner: <strong><%= plan.owner.username %></strong>
           </p>
-          <a href="/join/<%= plan._id %>"
-            ><button class="btn btn-danger w-100 mt-2 fw-bold">
-              Join Now
-            </button></a
+            <button
+            class="btn btn-danger w-100 mt-2 fw-bold join-btn"
+            data-id="<%= plan._id %>"
+            data-price="<%= plan.price %>"
+            data-name="<%= plan.name %>"
           >
+            Join Plan
+          </button>
           <% } %>
         </div>
 
@@ -147,3 +172,57 @@
     <% } %>
   </div>
 </div>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<% if(currUser){ %>
+  <script>
+    document.querySelectorAll(".join-btn").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const planId = btn.dataset.id;
+        const price = parseFloat(btn.dataset.price);
+        const planName = btn.dataset.name;
+  
+        if (isNaN(price)) {
+          alert("Invalid price");
+          return;
+        }
+  
+        // Create Razorpay order
+        const res = await fetch("/create-order", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ amount: price }),
+        });
+  
+        const data = await res.json();
+        if (!data.success) {
+          alert("Failed to create order");
+          return;
+        }
+  
+        const options = {
+          key: "<%= razorpayKeyId %>", // Replace with your actual test/live key
+          amount: data.order.amount,
+          currency: "INR",
+          name: "SubSplit",
+          description: `Joining ${planName}`,
+          order_id: data.order.id,
+          handler: function (response) {
+            // On successful payment, redirect to /join/:id
+            window.location.href = `/join/${planId}`;
+          },
+          prefill: {
+            name: "<%= currUser.username %>",
+            email: "<%= currUser.email %>",
+          },
+          theme: {
+            color: "#3399cc",
+          },
+        };
+  
+        const rzp = new Razorpay(options);
+        rzp.open();
+      });
+    });
+  </script>
+<% } %>
+

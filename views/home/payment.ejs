@@ -1,52 +1,31 @@
-<% layout("/layouts/boilerplate") %>
-<body>
-  <div class="container mt-5">
-    <div class="row justify-content-center">
-      <div class="col-md-8">
-        <div class="card shadow-lg p-4 text-center">
-          <!-- Profile Picture -->
-          <img
-            src="https://randomuser.me/api/portraits/men/1.jpg"
-            alt="Profile Picture"
-            class="rounded-circle mb-3"
-            width="150"
-            height="150"
-          />
+<!-- Add Money Modal Trigger -->
+<button
+  class="btn btn-primary"
+  data-bs-toggle="modal"
+  data-bs-target="#addMoneyModal"
+>
+  Add Money
+</button>
 
-          <h3 class="mb-2"><%= curUser.username %></h3>
-          <p class="text-muted"><%= curUser.email %></p>
-
-          <hr />
-
-          <!-- Bio -->
-          <p><strong>Wallet Money:</strong> <%=currUser.money%></p>
-          <!-- Hidden Money Input Form -->
-            <div class="input-group">
-              <input
-                type="number"
-                class="form-control"
-                name="amount"
-                id="walletAmount"
-                placeholder="Enter amount"
-                required
-                min="1"
-              />
-              <button class="btn btn-success" onclick="payNow()">Add</button>
-            </div>
-
-          <!-- Location -->
-          <p><strong>Location:</strong> Bangalore, India</p>
-
-          <!-- Edit Button -->
-          <a href="/profile/edit" class="btn btn-dark w-100 mt-3"
-            >Edit Profile</a
-          >
-        </div>
-      </div>
+<!-- Modal -->
+<div class="modal fade" id="addMoneyModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content p-3">
+      <h5 class="modal-title">Add Money</h5>
+      <input
+        type="number"
+        class="form-control mt-2"
+        id="walletAmount"
+        placeholder="Enter amount"
+      />
+      <button class="btn btn-success mt-3" onclick="payNow()">Pay</button>
     </div>
   </div>
-  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-  <script>
+</div>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
     async function payNow() {
       const amountInput = document.getElementById("walletAmount").value;
       const amount = parseInt(amountInput);
@@ -72,7 +51,7 @@
         }
   
         const options = {
-          key: "<%= razorpayKeyId %>",
+          key: "rzp_test_A1l8F7bk6C432e",
           amount: data.order.amount,
           currency: "INR",
           name: "CraveCart",
@@ -109,4 +88,3 @@
       }
     }
   </script>
-</body>
