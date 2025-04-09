@@ -1,14 +1,11 @@
 <% layout("/layouts/boilerplate")%>
-<body>
+
+<div class="container px-0 px-md-4">
   <div class="row">
     <div class="col-8 offset-2">
       <br /><br />
       <h3>Add a Sub</h3>
-      <form
-        method="POST"
-        action="/home"
-        novalidate
-      >
+      <form method="POST" action="/home" novalidate>
         <div class="mb-3">
           <label for="subName" class="form-label">Subscription Name:</label>
           <input
@@ -103,7 +100,12 @@
           <label for="expiryDate" class="form-label"
             >Subscription Expiry Date:</label
           >
-          <input name="sub[expDate]" type="date" class="form-control" required />
+          <input
+            name="sub[expDate]"
+            type="date"
+            class="form-control"
+            required
+          />
           <div class="invalid-feedback">Please select an expiry date.</div>
         </div>
 
@@ -119,4 +121,4 @@
       </form>
     </div>
   </div>
-</body>
+</div>

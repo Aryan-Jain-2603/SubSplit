@@ -65,14 +65,15 @@ module.exports.deletePlan = async (req, res) => {
 
 module.exports.MySubs = async (req, res) => {
   try {
-    let myPlansID = req.user.listings;
+    const user = await User.findById(req.user._id)
+      .populate({
+        path: "listings",
+        populate: { path: "owner" }
+      })
+      .populate("subscriptions");
 
-    const myPlans = await Sub.find({ _id: { $in: myPlansID } }).populate(
-      "owner"
-    );
-
-    const user = await User.findById(req.user._id).populate("subscriptions");
-    let joinedPlans = user.subscriptions;
+    const myPlans = user.listings;        
+    const joinedPlans = user.subscriptions; 
 
     res.render("./home/mysub.ejs", { myPlans, joinedPlans });
   } catch (err) {
@@ -80,6 +81,7 @@ module.exports.MySubs = async (req, res) => {
     res.redirect("/home");
   }
 };
+
 
 module.exports.editForm = async (req, res) => {
   let { id } = req.params;

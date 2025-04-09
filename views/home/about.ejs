@@ -1,0 +1,306 @@
+<%= layout('/layouts/boilerplate') %>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      background-color: #f8f9fa;
+      color: #495057;
+    }
+    .hero-gradient {
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      color: white;
+    }
+    .feature-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: #6366f1;
+    }
+    .testimonial-card {
+      border-left: 4px solid #6366f1;
+    }
+    .btn-primary {
+      background-color: #6366f1;
+      border-color: #6366f1;
+    }
+    .btn-primary:hover {
+      background-color: #4f46e5;
+      border-color: #4f46e5;
+    }
+    .text-primary {
+      color: #6366f1 !important;
+    }
+    .card {
+      transition: transform 0.3s ease;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+    }
+  </style>
+
+  <!-- Navigation -->
+
+  <!-- Hero Section -->
+  <section class="hero-gradient py-5 mb-5">
+    <div class="container py-5">
+      <div class="row align-items-center">
+        <div class="col-lg-6">
+          <h1 class="display-4 fw-bold mb-4">SubSplit</h1>
+          <p class="lead mb-4">Making subscriptions affordable — by letting you split and join with others.</p>
+          <p class="mb-4">SubSplit is revolutionizing how people access premium digital services by creating a community-driven marketplace where users can share subscription costs legally and securely.</p>
+          <div class="d-flex gap-3">
+            <a href="#" class="btn btn-light rounded-pill px-4">Learn More</a>
+            <a href="/home" class="btn btn-outline-light rounded-pill px-4">Join Now</a>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <img src="https://media.istockphoto.com/id/2101122136/photo/woman-hand-holding-tv-remote.jpg?s=1024x1024&w=is&k=20&c=3Uy-hnZhvST2_LfO_3Xl85PRInPCXr0-GfMGjbrrwYw=" alt="SubSplit Platform" class="img-fluid rounded-4 shadow mt-4 mt-lg-0">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Our Story Section -->
+  <section class="container mb-5">
+    <div class="row justify-content-center">
+      <div class="col-lg-8 text-center">
+        <h2 class="fw-bold mb-4">Our Story</h2>
+        <p class="lead mb-4">SubSplit was born from a simple idea — subscriptions shouldn't burn your wallet.</p>
+        <p class="mb-4">It all started when a group of college students realized they were collectively spending hundreds of dollars every month on overlapping subscriptions. They thought: "What if we could share these services legally and securely?"</p>
+        <p>Today, SubSplit has grown into a trusted platform connecting thousands of users who want to access premium content without premium prices. Our mission remains the same: making digital services accessible to everyone.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- What We Do Section -->
+  <section class="bg-light py-5 mb-5">
+    <div class="container">
+      <h2 class="text-center fw-bold mb-5">What is SubSplit?</h2>
+      <div class="row g-4">
+        <div class="col-md-6">
+          <div class="card h-100 border-0 shadow-sm p-4">
+            <div class="card-body">
+              <h4 class="fw-bold mb-3">For Subscribers</h4>
+              <p>SubSplit lets you browse available subscription slots from verified hosts. Choose from hundreds of plans across streaming, music, productivity, and more — and pay only for your share. No more full-price subscriptions for services you use occasionally.</p>
+              <ul class="list-unstyled mt-4">
+                <li class="mb-2"><i class="fas fa-check-circle text-primary me-2"></i> Save up to 75% on subscription costs</li>
+                <li class="mb-2"><i class="fas fa-check-circle text-primary me-2"></i> Join verified and reliable subscription groups</li>
+                <li class="mb-2"><i class="fas fa-check-circle text-primary me-2"></i> Pay securely through our integrated wallet</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card h-100 border-0 shadow-sm p-4">
+            <div class="card-body">
+              <h4 class="fw-bold mb-3">For Hosts</h4>
+              <p>Have unused slots in your family plan? SubSplit helps you monetize them safely. List your available slots, set your price, and connect with verified subscribers. Our platform handles payments, notifications, and ensures smooth sharing.</p>
+              <ul class="list-unstyled mt-4">
+                <li class="mb-2"><i class="fas fa-check-circle text-primary me-2"></i> Recover costs from your existing subscriptions</li>
+                <li class="mb-2"><i class="fas fa-check-circle text-primary me-2"></i> Manage all your shared plans in one dashboard</li>
+                <li class="mb-2"><i class="fas fa-check-circle text-primary me-2"></i> Get automatic payments with no hassle</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="container mb-5">
+    <h2 class="text-center fw-bold mb-5">Why Choose SubSplit?</h2>
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm text-center p-4">
+          <div class="card-body">
+            <i class="fas fa-shield-alt feature-icon"></i>
+            <h4 class="fw-bold mb-3">Secure Sharing</h4>
+            <p>Our platform uses advanced verification processes to ensure all users are trustworthy. We carefully monitor sharing activities to maintain a safe environment.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm text-center p-4">
+          <div class="card-body">
+            <i class="fas fa-wallet feature-icon"></i>
+            <h4 class="fw-bold mb-3">Safe Transactions</h4>
+            <p>With Razorpay integration, all payments are processed securely. Our escrow system ensures hosts only receive payment when subscribers have access.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm text-center p-4">
+          <div class="card-body">
+            <i class="fas fa-chart-line feature-icon"></i>
+            <h4 class="fw-bold mb-3">Transparent Tracking</h4>
+            <p>Monitor all your shared subscriptions through an intuitive dashboard. Get notifications about renewals, payments, and slot availability.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <!-- <section class="bg-light py-5 mb-5">
+    <div class="container">
+      <h2 class="text-center fw-bold mb-5">What Our Users Say</h2>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="card h-100 border-0 shadow-sm p-4 testimonial-card">
+            <div class="card-body">
+              <p class="mb-3">"As a student, I could never afford all the streaming services I wanted. With SubSplit, I now have access to Netflix, Spotify, and YouTube Premium for less than what one would cost!"</p>
+              <div class="d-flex align-items-center">
+                <img src="/api/placeholder/50/50" alt="User" class="rounded-circle me-3">
+                <div>
+                  <h6 class="fw-bold mb-0">Mia Johnson</h6>
+                  <small class="text-muted">College Student</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card h-100 border-0 shadow-sm p-4 testimonial-card">
+            <div class="card-body">
+              <p class="mb-3">"I had three empty slots on my family plan that were going unused. Now I'm earning back almost the entire cost of my subscription by sharing through SubSplit!"</p>
+              <div class="d-flex align-items-center">
+                <img src="/api/placeholder/50/50" alt="User" class="rounded-circle me-3">
+                <div>
+                  <h6 class="fw-bold mb-0">Thomas Chen</h6>
+                  <small class="text-muted">Software Engineer</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card h-100 border-0 shadow-sm p-4 testimonial-card">
+            <div class="card-body">
+              <p class="mb-3">"The platform is so easy to use, and I never have to worry about chasing payments. Everything is automated and I can manage all my subscriptions in one place."</p>
+              <div class="d-flex align-items-center">
+                <img src="/api/placeholder/50/50" alt="User" class="rounded-circle me-3">
+                <div>
+                  <h6 class="fw-bold mb-0">Priya Sharma</h6>
+                  <small class="text-muted">Digital Marketer</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section> -->
+
+  <!-- Numbers -->
+  <!-- <section class="container mb-5">
+    <div class="row text-center g-4">
+      <div class="col-md-3">
+        <div class="card h-100 border-0 shadow-sm p-4">
+          <div class="card-body">
+            <h2 class="display-4 fw-bold text-primary">10K+</h2>
+            <p class="text-muted">Active Users</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card h-100 border-0 shadow-sm p-4">
+          <div class="card-body">
+            <h2 class="display-4 fw-bold text-primary">25+</h2>
+            <p class="text-muted">Supported Services</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card h-100 border-0 shadow-sm p-4">
+          <div class="card-body">
+            <h2 class="display-4 fw-bold text-primary">60%</h2>
+            <p class="text-muted">Average Savings</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card h-100 border-0 shadow-sm p-4">
+          <div class="card-body">
+            <h2 class="display-4 fw-bold text-primary">4.8</h2>
+            <p class="text-muted">User Rating</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section> -->
+
+  <!-- Team Section -->
+  <section class="bg-light py-5 mb-5">
+    <div class="container">
+      <h2 class="text-center fw-bold mb-5">Meet Our Team</h2>
+      <div class="row g-4 justify-content-center">
+        <div class="col-md-3">
+          <div class="card h-100 border-0 shadow-sm text-center">
+            <!-- <img src="/api/placeholder/300/300" alt="Team Member" class="card-img-top"> -->
+            <div class="card-body">
+              <h5 class="fw-bold mb-1">Aryan Jain</h5>
+              <!-- <p class="text-muted small mb-3">Founder & CEO</p>s -->
+              <p class="small">Passionate about making digital services accessible to everyone.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card h-100 border-0 shadow-sm text-center">
+            <!-- <img src="/api/placeholder/300/300" alt="Team Member" class="card-img-top"> -->
+            <div class="card-body">
+              <h5 class="fw-bold mb-1">Manthan</h5>
+              <!-- <p class="text-muted small mb-3">CTO</p> -->
+              <p class="small">Passionate about making digital services accessible to everyone.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card h-100 border-0 shadow-sm text-center">
+            <!-- <img src="/api/placeholder/300/300" alt="Team Member" class="card-img-top"> -->
+            <div class="card-body">
+              <h5 class="fw-bold mb-1">Pampanna</h5>
+              <!-- <p class="text-muted small mb-3">Head of Operations</p> -->
+              <p class="small">Passionate about making digital services accessible to everyone.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card h-100 border-0 shadow-sm text-center">
+            <!-- <img src="/api/placeholder/300/300" alt="Team Member" class="card-img-top"> -->
+            <div class="card-body">
+              <h5 class="fw-bold mb-1">Anish</h5>
+              <!-- <p class="text-muted small mb-3">Customer Success</p> -->
+              <p class="small">Passionate about making digital services accessible to everyone.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Vision Section -->
+  <section class="container mb-5">
+    <div class="row align-items-center">
+      <div class="col-lg-6 mb-4 mb-lg-0 d-flex justify-content-center">
+        <img src="/img/subsplit.png" alt="Our Vision" class="img-fluid rounded-4 shadow w-50">
+      </div>
+      <div class="col-lg-6">
+        <h2 class="fw-bold mb-4">Our Vision</h2>
+        <p class="lead mb-4">We believe in a world where everyone has access to the digital services they need, without financial barriers.</p>
+        <p class="mb-4">The modern digital landscape offers incredible tools, content, and experiences — but accessing them all can be prohibitively expensive for many people. SubSplit aims to democratize access to these services through community-powered sharing.</p>
+        <p>As we grow, we're committed to maintaining the highest standards of security, transparency, and user satisfaction. Our goal is to build the most trusted subscription-sharing platform worldwide.</p>
+      </div>
+    </div>
+  </section>  
+
+  <!-- CTA Section -->
+  <section class="hero-gradient py-5 mb-5 rounded-4">
+    <div class="container py-4 text-center">
+      <h2 class="fw-bold mb-4">Ready to Start Saving?</h2>
+      <p class="lead mb-4">Join thousands of smart subscribers who are already enjoying premium services at a fraction of the cost.</p>
+      <div class="d-flex justify-content-center gap-3">
+        <a href="/signup" class="btn btn-light rounded-pill px-4 py-2">Sign Up Now</a>
+        <a href="#" class="btn btn-outline-light rounded-pill px-4 py-2">Learn More</a>
+      </div>
+    </div>
+  </section>
+

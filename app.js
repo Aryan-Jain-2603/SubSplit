@@ -87,6 +87,10 @@ app.post("/home", isLoggedIn, SubController.addPlan);
 
 app.get("/search", wrapAsync(SubController.searchPlans));
 
+app.get("/about", (req, res) => {
+  res.render("./home/about.ejs");
+})
+
 app.get("/newsub", isLoggedIn, (req, res) => {
   res.render("./home/newsub.ejs");
 });
