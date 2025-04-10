@@ -124,7 +124,7 @@ module.exports.searchPlans = async (req, res) => {
     return res.redirect("/home");
   }
 
-  res.render("home/index", { plans: plans });
+  res.render("home/index", { plans: plans, razorpayKeyId: process.env.RAZORPAY_KEY_ID });
 };
 
 module.exports.joinPlan = async (req, res) => {

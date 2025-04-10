@@ -2,37 +2,68 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     body {
-      background-color: #f8f9fa;
-      color: #495057;
+      background-color: #212529;
+      color: #e9ecef;
     }
     .hero-gradient {
-      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      background: linear-gradient(135deg, #4e46e5b9 0%, #7c3aedb1 100%);
       color: white;
     }
     .feature-icon {
       font-size: 2.5rem;
       margin-bottom: 1rem;
-      color: #6366f1;
+      color: #818cf8;
     }
     .testimonial-card {
-      border-left: 4px solid #6366f1;
+      border-left: 4px solid #818cf8;
     }
     .btn-primary {
-      background-color: #6366f1;
-      border-color: #6366f1;
-    }
-    .btn-primary:hover {
       background-color: #4f46e5;
       border-color: #4f46e5;
     }
+    .btn-primary:hover {
+      background-color: #4338ca;
+      border-color: #4338ca;
+    }
     .text-primary {
-      color: #6366f1 !important;
+      color: #818cf8 !important;
     }
     .card {
       transition: transform 0.3s ease;
+      background-color: #2c3034;
+      border-color: #373b3e;
+      color: #e9ecef;
     }
     .card:hover {
       transform: translateY(-5px);
+    }
+    .bg-light {
+      background-color: #343a40 !important;
+    }
+    .text-muted {
+      color: #adb5bd !important;
+    }
+    .shadow-sm {
+      box-shadow: 0 .125rem .25rem rgba(0, 0, 0, 0.3) !important;
+    }
+    .btn-light {
+      background-color: #f8f9fa;
+      color: #212529;
+    }
+    .btn-light:hover {
+      background-color: #e9ecef;
+      color: #212529;
+    }
+    .btn-outline-light {
+      color: #f8f9fa;
+      border-color: #f8f9fa;
+    }
+    .btn-outline-light:hover {
+      background-color: #f8f9fa;
+      color: #212529;
+    }
+    small {
+      color: #adb5bd;
     }
   </style>
 
@@ -139,95 +170,6 @@
     </div>
   </section>
 
-  <!-- Testimonials -->
-  <!-- <section class="bg-light py-5 mb-5">
-    <div class="container">
-      <h2 class="text-center fw-bold mb-5">What Our Users Say</h2>
-      <div class="row g-4">
-        <div class="col-md-4">
-          <div class="card h-100 border-0 shadow-sm p-4 testimonial-card">
-            <div class="card-body">
-              <p class="mb-3">"As a student, I could never afford all the streaming services I wanted. With SubSplit, I now have access to Netflix, Spotify, and YouTube Premium for less than what one would cost!"</p>
-              <div class="d-flex align-items-center">
-                <img src="/api/placeholder/50/50" alt="User" class="rounded-circle me-3">
-                <div>
-                  <h6 class="fw-bold mb-0">Mia Johnson</h6>
-                  <small class="text-muted">College Student</small>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="card h-100 border-0 shadow-sm p-4 testimonial-card">
-            <div class="card-body">
-              <p class="mb-3">"I had three empty slots on my family plan that were going unused. Now I'm earning back almost the entire cost of my subscription by sharing through SubSplit!"</p>
-              <div class="d-flex align-items-center">
-                <img src="/api/placeholder/50/50" alt="User" class="rounded-circle me-3">
-                <div>
-                  <h6 class="fw-bold mb-0">Thomas Chen</h6>
-                  <small class="text-muted">Software Engineer</small>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="card h-100 border-0 shadow-sm p-4 testimonial-card">
-            <div class="card-body">
-              <p class="mb-3">"The platform is so easy to use, and I never have to worry about chasing payments. Everything is automated and I can manage all my subscriptions in one place."</p>
-              <div class="d-flex align-items-center">
-                <img src="/api/placeholder/50/50" alt="User" class="rounded-circle me-3">
-                <div>
-                  <h6 class="fw-bold mb-0">Priya Sharma</h6>
-                  <small class="text-muted">Digital Marketer</small>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section> -->
-
-  <!-- Numbers -->
-  <!-- <section class="container mb-5">
-    <div class="row text-center g-4">
-      <div class="col-md-3">
-        <div class="card h-100 border-0 shadow-sm p-4">
-          <div class="card-body">
-            <h2 class="display-4 fw-bold text-primary">10K+</h2>
-            <p class="text-muted">Active Users</p>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-3">
-        <div class="card h-100 border-0 shadow-sm p-4">
-          <div class="card-body">
-            <h2 class="display-4 fw-bold text-primary">25+</h2>
-            <p class="text-muted">Supported Services</p>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-3">
-        <div class="card h-100 border-0 shadow-sm p-4">
-          <div class="card-body">
-            <h2 class="display-4 fw-bold text-primary">60%</h2>
-            <p class="text-muted">Average Savings</p>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-3">
-        <div class="card h-100 border-0 shadow-sm p-4">
-          <div class="card-body">
-            <h2 class="display-4 fw-bold text-primary">4.8</h2>
-            <p class="text-muted">User Rating</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section> -->
-
   <!-- Team Section -->
   <section class="bg-light py-5 mb-5">
     <div class="container">
@@ -303,4 +245,3 @@
       </div>
     </div>
   </section>
-
