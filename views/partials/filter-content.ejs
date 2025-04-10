@@ -1,0 +1,71 @@
+<form class="d-flex mb-3" role="search" action="/search" method="get">
+  <input
+    class="form-control me-2"
+    type="search"
+    placeholder="Search for plans..."
+    name="query"
+  />
+  <button class="btn btn-primary" type="submit">Search</button>
+</form>
+
+<h5 class="fw-bold mb-3">Popular Subscriptions</h5>
+<div class="list-group rounded-3 mb-4">
+  <a
+    href="/search?query=Netflix"
+    class="list-group-item list-group-item-action"
+  >
+    <i class="bi bi-film text-danger me-2"></i> Netflix
+  </a>
+  <a
+    href="/search?query=Amazon Prime"
+    class="list-group-item list-group-item-action"
+  >
+    <i class="bi bi-amazon text-warning me-2"></i> Amazon Prime
+  </a>
+  <a
+    href="/search?query=Disney+"
+    class="list-group-item list-group-item-action"
+  >
+    <i class="bi bi-display text-primary me-2"></i> Disney+
+  </a>
+  <a href="/search?query=Hulu" class="list-group-item list-group-item-action">
+    <i class="bi bi-tv text-success me-2"></i> Hulu
+  </a>
+  <a
+    href="/search?query=Spotify"
+    class="list-group-item list-group-item-action"
+  >
+    <i class="bi bi-spotify text-success me-2"></i> Spotify
+  </a>
+  <a
+    href="/search?query=YouTube Premium"
+    class="list-group-item list-group-item-action"
+  >
+    <i class="bi bi-youtube text-danger me-2"></i> YouTube Premium
+  </a>
+  <a
+    href="/search?query=Apple Music"
+    class="list-group-item list-group-item-action"
+  >
+    <i class="bi bi-music-note-beamed text-danger me-2"></i> Apple Music
+  </a>
+</div>
+
+<h5 class="fw-bold mb-3">Categories</h5>
+<div class="d-flex flex-wrap gap-2">
+  <a href="/search?category=Streaming" class="btn btn-outline-primary btn-sm"
+    >Streaming</a
+  >
+  <a href="/search?category=Music" class="btn btn-outline-success btn-sm"
+    >Music</a
+  >
+  <a href="/search?category=Gaming" class="btn btn-outline-danger btn-sm"
+    >Gaming</a
+  >
+  <a href="/search?category=Productivity" class="btn btn-outline-info btn-sm"
+    >Productivity</a
+  >
+  <a href="/search?category=Education" class="btn btn-outline-warning btn-sm"
+    >Education</a
+  >
+</div>

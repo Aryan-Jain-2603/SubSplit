@@ -1,76 +1,122 @@
 <% layout("/layouts/boilerplate") %>
+
+<style>
+  body{
+    color: black;
+  }
+  .profile-card {
+    background-color: white;
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: auto;
+  }
+
+  .profile-image {
+    border: 4px solid #3399cc;
+    padding: 4px;
+    transition: transform 0.3s ease;
+  }
+
+  .profile-image:hover {
+    transform: scale(1.05);
+  }
+
+  .wallet-group {
+    margin: 1.5rem 0;
+  }
+
+  .btn-success {
+    background-color: #3399cc;
+    border: none;
+  }
+
+  .btn-success:hover {
+    background-color: #287fa6;
+  }
+
+  .btn-dark {
+    background-color: #333;
+  }
+
+  .card-label {
+    font-weight: 500;
+    color: #000000;
+  }
+  
+  #walletAmount {
+    background-color: rgb(255, 255, 255);
+  }
+
+</style>
+
 <body>
   <div class="container mt-5">
-    <div class="row justify-content-center">
-      <div class="col-md-8">
-        <div class="card shadow-lg p-4 text-center">
-          <!-- Profile Picture -->
-          <img
-            src="https://randomuser.me/api/portraits/men/1.jpg"
-            alt="Profile Picture"
-            class="rounded-circle mb-3"
-            width="150"
-            height="150"
-          />
+    <div class="profile-card text-center">
+      <!-- Profile Picture -->
+      <img
+        src="https://randomuser.me/api/portraits/men/1.jpg"
+        alt="Profile Picture"
+        class="rounded-circle profile-image mb-3"
+        width="150"
+        height="150"
+      />
 
-          <h3 class="mb-2"><%= curUser.username %></h3>
-          <p class="text-muted"><%= curUser.email %></p>
+      <h3 class="mb-0 fw-bold"><%= curUser.username %></h3>
+      <p class=" mb-3"><%= curUser.email %></p>
 
-          <hr />
+      <hr />
 
-          <!-- Bio -->
-          <p><strong>Wallet Money:</strong> <%=currUser.money%></p>
-          <!-- Hidden Money Input Form -->
-            <div class="input-group">
-              <input
-                type="number"
-                class="form-control"
-                name="amount"
-                id="walletAmount"
-                placeholder="Enter amount"
-                required
-                min="1"
-              />
-              <button class="btn btn-success" onclick="payNow()">Add</button>
-            </div>
+      <!-- Wallet Info -->
+      <p><span class="card-label">Wallet Money:</span> ₹ <%= currUser.money %></p>
 
-          <!-- Location -->
-          <p><strong>Location:</strong> Bangalore, India</p>
-
-          <!-- Edit Button -->
-          <a href="/profile/edit" class="btn btn-dark w-100 mt-3"
-            >Edit Profile</a
-          >
-        </div>
+      <!-- Hidden Money Input Form -->
+      <div class="wallet-group input-group">
+        <input
+          type="number"
+          class="form-control"
+          name="amount"
+          id="walletAmount"
+          placeholder="Enter amount"
+          required
+          min="1"
+        />
+        <button class="btn btn-success" onclick="payNow()">Add</button>
       </div>
+
+      <!-- Location -->
+      <p class="mt-3"><span class="card-label">Location:</span> Bangalore, India</p>
+
+      <!-- Edit Button -->
+      <a href="/profile/edit" class="btn btn-dark w-100 mt-4">Edit Profile</a>
     </div>
   </div>
+
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <script>
     async function payNow() {
       const amountInput = document.getElementById("walletAmount").value;
       const amount = parseInt(amountInput);
-  
+
       if (isNaN(amount) || amount <= 0) {
         alert("Please enter a valid amount");
         return;
       }
-  
+
       try {
         const res = await fetch("/create-order", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ amount }),
         });
-  
+
         const data = await res.json();
-        console.log("Response from create-order:", data);
-  
         if (!data.success) {
           alert("Order creation failed");
           return;
         }
-  
+
         const options = {
           key: "<%= razorpayKeyId %>",
           amount: data.order.amount,
@@ -84,7 +130,7 @@
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ amount }),
             });
-  
+
             const updateData = await updateRes.json();
             if (updateData.success) {
               alert("Wallet updated successfully");
@@ -101,7 +147,7 @@
             color: "#3399cc",
           },
         };
-  
+
         const rzp1 = new Razorpay(options);
         rzp1.open();
       } catch (err) {
