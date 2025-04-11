@@ -140,8 +140,6 @@ app.post(
 app.get("/logout", userController.logout);
 
 app.post("/create-order", async (req, res) => {
-  // console.log("Received amount from frontend:", req.body.amount);
-
   const { amount } = req.body;
 
   if (!amount) {
@@ -155,10 +153,6 @@ app.post("/create-order", async (req, res) => {
   };
 
   try {
-    const user = await User.findById(req.user._id);
-    if (user.money < amount) {
-      return res.status(401).json({ success: false, message: "Not enough money" });
-    }
     const order = await razorpay.orders.create(options);
     res.json({ success: true, order });
   } catch (err) {
@@ -166,6 +160,7 @@ app.post("/create-order", async (req, res) => {
     res.status(500).json({ success: false, message: "Order creation failed" });
   }
 });
+
 
 
 
@@ -178,9 +173,6 @@ app.post("/update-wallet", async (req, res) => {
 
   try {
     const user = await User.findById(req.user._id);
-    if (user.money < amount) {
-      return res.status(401).json({ success: false, message: "Not enough money" });
-    }
     user.money = (user.money || 0) + parseInt(amount);
     await user.save();
 
@@ -190,6 +182,7 @@ app.post("/update-wallet", async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 });
+
 
 
 app.all("*", (req, res, next) => {
