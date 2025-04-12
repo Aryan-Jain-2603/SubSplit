@@ -127,6 +127,32 @@ module.exports.searchPlans = async (req, res) => {
   res.render("home/index", { plans: plans, razorpayKeyId: process.env.RAZORPAY_KEY_ID });
 };
 
+module.exports.searchCatagories = async (req, res) => {
+  const { catagorie } = req.query;
+
+  if (!catagorie) {
+    req.flash("error", "Please enter a search term.");
+    return res.redirect("/home");
+  }
+
+  const searchQuery = catagorie.toLowerCase(); // optional: normalize for case-insensitive search
+  const allPlans = await Sub.find();
+
+  const plans = allPlans.filter((plan) => 
+    plan.categories && plan.categories.toLowerCase() === searchQuery
+  );
+
+  if (plans.length === 0) {
+    req.flash("error", "No Plans found for this search.");
+    return res.redirect("/home");
+  }
+
+  res.render("home/index", {
+    plans: plans,
+    razorpayKeyId: process.env.RAZORPAY_KEY_ID,
+  });
+};
+
 module.exports.joinPlan = async (req, res) => {
   let { id } = req.params;
   let plan = await Sub.findById(id).populate("owner");

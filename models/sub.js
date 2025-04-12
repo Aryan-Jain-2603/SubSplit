@@ -47,6 +47,17 @@ const planSchema = new Schema({
     //     type: Schema.Types.ObjectId,
     //     ref: "User",
     // }],
+    categories:{
+        type: String,
+        enum: [
+            "Streaming",
+            "Music",
+            "Gaming",
+            "Productivity",
+            "Education",
+        ],
+        required: true,
+    },
     email:{
         type: String,
         required: true,

@@ -42,6 +42,19 @@
           <div class="invalid-feedback">Please select a subscription type.</div>
         </div>
 
+        <div class="mb-3">
+          <label for="subscriptionType" class="form-label">Categories </label>
+          <select name="sub[categories]" class="form-control" required>
+            <option value="" disabled selected>Select type</option>
+            <option value="Music">Music</option>
+            <option value="Standard">Standard</option>
+            <option value="Gaming">Gaming</option>
+            <option value="Productivity">Productivity</option>
+            <option value="Education">Education</option>
+          </select>
+          <div class="invalid-feedback">Please select a valid Category.</div>
+        </div>
+
         <div class="row">
           <div class="mb-3 col-md-6">
             <label for="price" class="form-label">Price per Slot:</label>
