@@ -72,7 +72,10 @@ module.exports.MySubs = async (req, res) => {
       })
       .populate("subscriptions");
 
-    const myPlans = user.listings;        
+    const plan = await Sub.find({owner: req.user._id })
+      .populate("owner");
+
+    const myPlans = plan;        
     const joinedPlans = user.subscriptions; 
 
     res.render("./home/mysub.ejs", { myPlans, joinedPlans });

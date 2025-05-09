@@ -84,128 +84,156 @@
 </style>
 
 <!-- <div class="container py-4"> -->
-  <!-- Hero Section -->
-  <div class="hero-section text-center mb-4 shadow">
-    <h1 class="display-5 fw-bold mb-3">Find Your Perfect Subscription Match</h1>
-    <p class="lead mb-4">
-      Join thousands of users saving money by sharing premium subscription plans
-    </p>
-    <div class="d-flex justify-content-center gap-3 d-md-none">
-      <button
-        class="btn btn-lg btn-primary"
-        type="button"
-        data-bs-toggle="offcanvas"
-        data-bs-target="#offcanvasExample"
-        aria-controls="offcanvasExample"
-      >
-        <i class="bi bi-funnel-fill me-2"></i> Filters
-      </button>
+<!-- Hero Section -->
+<div class="hero-section text-center mb-4 shadow">
+  <h1 class="display-5 fw-bold mb-3">Find Your Perfect Subscription Match</h1>
+  <p class="lead mb-4">
+    Join thousands of users saving money by sharing premium subscription plans
+  </p>
+  <div class="d-flex justify-content-center gap-3 d-md-none">
+    <button
+      class="btn btn-lg btn-primary"
+      type="button"
+      data-bs-toggle="offcanvas"
+      data-bs-target="#offcanvasExample"
+      aria-controls="offcanvasExample"
+    >
+      <i class="bi bi-funnel-fill me-2"></i> Filters
+    </button>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-3 d-none d-md-block">
+    <div class="sidebar p-3 shadow sticky-top">
+      <%- include('../partials/filter-content') %>
     </div>
   </div>
 
-  <div class="row">
-    <div class="col-md-3 d-none d-md-block">
-      <div class="sidebar p-3 shadow sticky-top">
-        <%- include('../partials/filter-content') %>
-      </div>
+  <div class="col-md-9">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="fw-bold mb-0">Available Plans</h2>
     </div>
 
-    <div class="col-md-9">
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold mb-0">Available Plans</h2>
-      </div>
-
-      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-        <% for(let plan of plans){%>
-        <div class="col">
-          <div class="card h-100 shadow subscription-card border-0">
-            <img src="<%= plan.image %>" class="card-img-top" alt="Subscription Image" />
-            <div class="card-body">
-              <div class="d-flex justify-content-between align-items-center mb-3">
-                <h4 class="card-title fw-bold mb-0"><%= plan.name %></h4>
-                <span class="badge category-badge bg-primary"><%= plan.type %></span>
-              </div>
-              <p class="text-muted"><%= plan.description %></p>
-              <div class="d-flex justify-content-between align-items-center my-3">
-                <h5 class="card-price fw-bold mb-0">
-                  ₹<%= plan.price %> <small class="text-muted">/ month</small>
-                </h5>
-                <span class="badge slots-badge">
-                  <i class="bi bi-people-fill me-1"></i> <%= plan.slots %> Slots Left
-                </span>
-              </div>
-
-              <% if(!currUser){ %>
-              <a href="/join/<%= plan._id %>" class="text-decoration-none">
-                <button class="btn join-btn w-100">
-                  <i class="bi bi-person-plus-fill me-2"></i> Join Now
-                </button>
-              </a>
-              <% } else if(plan.owner._id.toString() === currUser._id.toString()){ %>
-              <div class="row g-2">
-                <div class="col">
-                  <a href="/mysub/<%= plan._id %>" class="btn btn-outline-primary w-100">
-                    <i class="bi bi-pencil-square me-1"></i> Edit
-                  </a>
-                </div>
-                <div class="col">
-                  <form action="/mysub/<%= plan._id %>?_method=DELETE" method="POST">
-                    <button type="submit" class="btn btn-outline-danger w-100">
-                      <i class="bi bi-trash me-1"></i> Delete
-                    </button>
-                  </form>
-                </div>
-              </div>
-              <% } else { %>
-              <div class="mb-2">
-                <span class="text-muted">
-                  <i class="bi bi-person-circle me-1"></i> Owner:
-                  <strong><%= plan.owner.username %></strong>
-                </span>
-              </div>
-              <button
-                class="btn join-btn w-100"
-                data-id="<%= plan._id %>"
-                data-price="<%= plan.price %>"
-                data-name="<%= plan.name %>"
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+      <% for(let plan of plans){%>
+      <div class="col">
+        <div class="card h-100 shadow subscription-card border-0">
+          <img
+            src="<%= plan.image %>"
+            class="card-img-top"
+            alt="Subscription Image"
+          />
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h4 class="card-title fw-bold mb-0"><%= plan.name %></h4>
+              <h4 class="card-catagories fw-bold mb-0" style="display: none"><%= plan.categories %></h4>
+              <span class="badge category-badge bg-primary"
+                ><%= plan.type %></span
               >
-                <i class="bi bi-credit-card-fill me-2"></i> Join Plan
+            </div>
+            
+            <p class="prediction-result mt-2 text-primary fw-bold"></p>
+            <div class="d-flex justify-content-between align-items-center my-3">
+              <h5 class="card-price fw-bold mb-0">
+                ₹<%= plan.price %> <small class="text-muted">/ month</small>
+              </h5>
+              <span class="badge slots-badge">
+                <i class="bi bi-people-fill me-1"></i> <%= plan.slots %> Slots
+                Left
+              </span>
+            </div>
+
+            <% if(!currUser){ %>
+            <a href="/join/<%= plan._id %>" class="text-decoration-none">
+              <button class="btn join-btn w-100">
+                <i class="bi bi-person-plus-fill me-2"></i> Join Now
               </button>
-              <% } %>
+            </a>
+            <% } else if(plan.owner._id.toString() === currUser._id.toString()){
+            %>
+            <div class="row g-2">
+              <div class="col">
+                <a
+                  href="/mysub/<%= plan._id %>"
+                  class="btn btn-outline-primary w-100"
+                >
+                  <i class="bi bi-pencil-square me-1"></i> Edit
+                </a>
+              </div>
+              <div class="col">
+                <form
+                  action="/mysub/<%= plan._id %>?_method=DELETE"
+                  method="POST"
+                >
+                  <button type="submit" class="btn btn-outline-danger w-100">
+                    <i class="bi bi-trash me-1"></i> Delete
+                  </button>
+                </form>
+              </div>
             </div>
-            <div class="card-footer">
-              <small class="text-muted">
-                <i class="bi bi-calendar-event me-1"></i> Expires on:
-                <strong><%= new Date(plan.expDate).toLocaleDateString("en-IN", { day: 'numeric', month: 'long', year: 'numeric' }) %></strong>
-              </small>
+            <% } else { %>
+            <div class="mb-2">
+              <span class="text-muted">
+                <i class="bi bi-person-circle me-1"></i> Owner:
+                <strong><%= plan.owner.username %></strong>
+              </span>
             </div>
+            <button class="btn btn-outline-success w-100 predict-button">Predict Plan Pricing</button>
+            <button
+              class="btn join-btn w-100"
+              data-id="<%= plan._id %>"
+              data-price="<%= plan.price %>"
+              data-name="<%= plan.name %>"
+            >
+              <i class="bi bi-credit-card-fill me-2"></i> Join Plan
+            </button>
+            <% } %>
+          </div>
+          <div class="card-footer">
+            <small class="text-muted">
+              <i class="bi bi-calendar-event me-1"></i> Expires on:
+              <strong
+                ><%= new Date(plan.expDate).toLocaleDateString("en-IN", { day:
+                'numeric', month: 'long', year: 'numeric' }) %></strong
+              >
+            </small>
           </div>
         </div>
-        <% } %>
-      </div>
-
-      <% if(plans.length === 0){ %>
-      <div class="text-center py-5">
-        <i class="bi bi-search text-muted" style="font-size: 3rem"></i>
-        <h3 class="mt-3">No plans found</h3>
-        <p class="text-muted">
-          Try adjusting your search filters or create a plan yourself!
-        </p>
-        <a href="/create" class="btn btn-primary mt-2">Create a New Plan</a>
       </div>
       <% } %>
     </div>
+
+    <% if(plans.length === 0){ %>
+    <div class="text-center py-5">
+      <i class="bi bi-search text-muted" style="font-size: 3rem"></i>
+      <h3 class="mt-3">No plans found</h3>
+      <p class="text-muted">
+        Try adjusting your search filters or create a plan yourself!
+      </p>
+      <a href="/create" class="btn btn-primary mt-2">Create a New Plan</a>
+    </div>
+    <% } %>
   </div>
+</div>
 <!-- </div> -->
 
-<div class="offcanvas offcanvas-start d-md-none" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+<div
+  class="offcanvas offcanvas-start d-md-none"
+  tabindex="-1"
+  id="offcanvasExample"
+  aria-labelledby="offcanvasExampleLabel"
+>
   <div class="offcanvas-header bg-primary text-white">
     <h5 class="offcanvas-title" id="offcanvasExampleLabel">Filters</h5>
-    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    <button
+      type="button"
+      class="btn-close btn-close-white"
+      data-bs-dismiss="offcanvas"
+      aria-label="Close"
+    ></button>
   </div>
-  <div class="offcanvas-body">
-    <%- include('../partials/filter-content') %>
-  </div>
+  <div class="offcanvas-body"><%- include('../partials/filter-content') %></div>
 </div>
 
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
@@ -256,4 +284,53 @@
     });
   });
 </script>
+
 <% } %>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    // Select all buttons with class 'predict-button'
+    document.querySelectorAll(".predict-button").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const card = btn.closest(".card-body");
+
+        // Get values from DOM (you'll need to embed them in data attributes or elements)
+        const price = card.querySelector(".card-price")?.innerText.match(/\d+/)?.[0];
+        const slots = card.querySelector(".slots-badge")?.innerText.match(/\d+/)?.[0];
+        const type = card.querySelector(".category-badge")?.innerText;
+        const category = card.querySelector(".card-catagories")?.innerText;
+
+        if (!price || !slots || !type || !category) {
+          alert("Missing data for prediction");
+          return;
+        }
+
+        predictPlan(price, slots, type, category, card);
+      });
+    });
+  });
+
+  async function predictPlan(price, slots, type, categories, card) {
+    try {
+      const response = await fetch("/predict", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ price, slots, type, categories }),
+      });
+
+      if (!response.ok) throw new Error("Request failed");
+
+      const result = await response.json();
+      console.log("Prediction result:", result);
+
+      // Show prediction in the matching card
+      const resultPara = card.querySelector(".prediction-result");
+      if (resultPara) {
+        resultPara.innerText = "Prediction: " + result.prediction;
+      }
+    } catch (error) {
+      console.error("Prediction error:", error);
+    }
+  }
+</script>
+
+

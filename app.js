@@ -14,10 +14,13 @@ const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const User = require("./models/user.js");
-const wrapAsync = require("./util/wrapAsync");
+const wrapAsync = require("./util/wrapAsync.js");
 const { isLoggedIn, isOwner } = require("./middleware.js");
 const ExpressError = require("./util/ExpressError.js");
-const razorpay = require("./util/razorpay");
+const razorpay = require("./util/razorpay.js");
+const { PythonShell } = require('python-shell');
+
+const cors = require('cors');
 
 const store = MongoStore.create({
   mongoUrl: "mongodb://127.0.0.1:27017/SubSplitfinal",
@@ -49,6 +52,9 @@ async function main() {
   const mongoURL = "mongodb://127.0.0.1:27017/SubSplitfinal";
   await mongoose.connect(mongoURL);
 }
+
+
+app.use(cors());
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -184,6 +190,26 @@ app.post("/update-wallet", async (req, res) => {
     console.error("Failed to update wallet:", err);
     res.status(500).json({ success: false, message: "Server error" });
   }
+});
+
+app.post('/predict', (req, res) => {
+  const { price, slots, type, categories } = req.body;
+  console.log('Received data:', req.body);
+
+  const options = {
+    mode: 'json',
+    pythonOptions: ['-u'],
+    scriptPath: './',
+    args: [price, slots, type, categories]
+  };
+
+  PythonShell.run('predict_plan.py', options).then(results => {
+    console.log('Prediction result from Python:', results);
+    res.json(results[0]); // Because results is an array of JSON objects
+  }).catch(err => {
+    console.error('Prediction error:', err);
+    res.status(500).json({ error: 'Prediction failed' });
+  });
 });
 
 
