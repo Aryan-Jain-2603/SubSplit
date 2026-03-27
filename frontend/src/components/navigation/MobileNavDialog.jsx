@@ -28,11 +28,8 @@ function MobileNavDialog({ isOpen, onClose, links }) {
       <div className="fixed inset-0 flex">
         <DialogPanel className="flex h-full w-full max-w-xs flex-col gap-6 overflow-y-auto border-r border-[color:var(--color-border)] bg-[color:var(--color-surface)] px-5 py-6 shadow-2xl transition data-[closed]:-translate-x-full">
           <div className="space-y-2">
-            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[color:var(--color-text-muted)]">
-              CraveCart
-            </p>
-            <p className="text-lg font-semibold text-[color:var(--color-text-strong)]">
-              Subscription sharing, rebuilt for React.
+            <p className="text-[1.55rem] font-extrabold tracking-[-0.05em] text-[color:var(--color-primary-strong)]">
+              SubSplit
             </p>
             {isAuthenticated ? (
               <p className="text-sm text-[color:var(--color-text-muted)]">

@@ -1,6 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
-import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
-import { FunnelIcon, PlusIcon, SparklesIcon } from "@heroicons/react/24/outline";
+import { Dialog, DialogBackdrop, DialogPanel, Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
+import {
+  ChevronDownIcon,
+  FunnelIcon,
+  PlusIcon,
+  SparklesIcon,
+} from "@heroicons/react/24/outline";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useLocation, useSearchParams } from "react-router-dom";
 import { deletePlan, getPlans, joinPlan, predictPlan } from "../api/plans";
@@ -20,6 +25,7 @@ import PlanGrid from "../components/ui/PlanGrid";
 import SearchBar from "../components/ui/SearchBar";
 import { PLAN_CATEGORIES } from "../lib/constants";
 import { useDebouncedValue } from "../hooks/useDebouncedValue";
+import { cn } from "../lib/utils";
 
 function PlansPage() {
   const queryClient = useQueryClient();
@@ -150,57 +156,118 @@ function PlansPage() {
 
   const plans = plansQuery.data?.plans || [];
   const redirectTo = `${location.pathname}${location.search}`;
+  const activeFilterCount = Number(Boolean(filters.type)) + Number(Boolean(filters.availability));
+  const filterSummary = [
+    filters.type || "All types",
+    filters.availability === "open" ? "Open only" : "Any availability",
+  ].join(" · ");
 
   return (
     <div className="space-y-8">
-      <section className="px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12">
-        <PageHeader
-          eyebrow="Browse plans"
-          title="Discover shared subscriptions without losing the details that matter."
-          description="Search, filter, compare, predict, and join from one consistent marketplace screen. Owners get fast management actions without leaving the browse context."
-          actions={
-            <>
-              <Button
-                variant="secondary"
-                onClick={() => setMobileFiltersOpen(true)}
-                className="lg:hidden"
-              >
-                <FunnelIcon className="h-4 w-4" />
-                Filters
-              </Button>
-              {isAuthenticated ? (
-                <Button asChild>
-                  <Link to="/plans/new">
-                    <PlusIcon className="h-4 w-4" />
-                    Create plan
-                  </Link>
+      <section className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="space-y-6">
+          <PageHeader
+            eyebrow="Browse plans"
+            title="Discover shared subscriptions without losing the details that matter."
+            description="Search, filter, compare, predict, and join from one consistent marketplace screen. Owners get fast management actions without leaving the browse context."
+            actions={
+              <>
+                <Button
+                  variant="secondary"
+                  onClick={() => setMobileFiltersOpen(true)}
+                  className="md:hidden"
+                >
+                  <FunnelIcon className="h-4 w-4" />
+                  Filters
                 </Button>
-              ) : (
-                <Button asChild>
-                  <Link to="/signup">Create account</Link>
-                </Button>
-              )}
-            </>
-          }
-        />
-      </section>
+                {isAuthenticated ? (
+                  <Button asChild>
+                    <Link to="/plans/new">
+                      <PlusIcon className="h-4 w-4" />
+                      Create plan
+                    </Link>
+                  </Button>
+                ) : (
+                  <Button asChild>
+                    <Link to="/signup">Create account</Link>
+                  </Button>
+                )}
+              </>
+            }
+          />
 
-      <section className="space-y-5 px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12">
-        <SearchBar value={searchValue} onChange={setSearchValue} />
-        <CategoryChips
-          categories={PLAN_CATEGORIES}
-          activeCategory={filters.category}
-          onSelect={(value) => updateFilter("category", value)}
-        />
-      </section>
-
-      <section className="px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12">
-        <div className="grid gap-6 xl:grid-cols-[20rem_minmax(0,1fr)] xl:items-start 2xl:grid-cols-[22rem_minmax(0,1fr)]">
-          <aside className="hidden xl:block">
-            <div className="sticky top-24">
-              <FilterPanel filters={filters} onChange={updateFilter} onClear={clearFilters} />
+          <div className="flex flex-col gap-4 md:flex-row md:items-center">
+            <SearchBar value={searchValue} onChange={setSearchValue} className="w-full md:flex-1" />
+            <div className="hidden md:block md:shrink-0">
+              <Popover className="relative">
+                {({ open }) => (
+                  <>
+                    <PopoverButton
+                      className={cn(
+                        "inline-flex min-h-13 min-w-[19rem] items-center justify-between gap-3 rounded-full border bg-white px-5 text-left shadow-[var(--shadow-soft)] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--color-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--color-surface)]",
+                        open
+                          ? "border-[color:var(--color-primary)] ring-4 ring-[color:var(--color-primary-soft)]"
+                          : "border-[color:var(--color-border)]",
+                      )}
+                    >
+                      <span className="flex min-w-0 items-center gap-3">
+                        <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[color:var(--color-primary-soft)] text-[color:var(--color-primary-strong)]">
+                          <FunnelIcon className="h-4 w-4" />
+                        </span>
+                        <span className="min-w-0">
+                          <span className="block text-[11px] font-semibold uppercase tracking-[0.16em] text-[color:var(--color-text-soft)]">
+                            Filter
+                          </span>
+                          <span className="block truncate text-sm font-semibold text-[color:var(--color-text-strong)]">
+                            {filterSummary}
+                          </span>
+                        </span>
+                      </span>
+                      <span className="flex items-center gap-2">
+                        {activeFilterCount > 0 ? (
+                          <span className="inline-flex min-w-6 items-center justify-center rounded-full bg-[color:var(--color-primary-soft)] px-2 py-1 text-xs font-semibold text-[color:var(--color-primary-strong)]">
+                            {activeFilterCount}
+                          </span>
+                        ) : null}
+                        <ChevronDownIcon
+                          className={cn(
+                            "h-4 w-4 text-[color:var(--color-text-muted)] transition",
+                            open && "rotate-180",
+                          )}
+                        />
+                      </span>
+                    </PopoverButton>
+                    <PopoverPanel
+                      anchor={{ to: "bottom end", gap: 12 }}
+                      className="z-20 mt-2 focus:outline-none"
+                    >
+                      <FilterPanel
+                        mode="dropdown"
+                        filters={filters}
+                        onChange={updateFilter}
+                        onClear={clearFilters}
+                      />
+                    </PopoverPanel>
+                  </>
+                )}
+              </Popover>
             </div>
-          </aside>
+          </div>
+          <CategoryChips
+            categories={PLAN_CATEGORIES}
+            activeCategory={filters.category}
+            onSelect={(value) => updateFilter("category", value)}
+          />
+          <div className="flex items-center justify-between px-1 text-sm text-[color:var(--color-text-muted)]">
+            <span>
+              {plansQuery.isLoading
+                ? "Updating marketplace..."
+                : `${plans.length} plan${plans.length === 1 ? "" : "s"} available`}
+            </span>
+            <span className="hidden sm:inline">
+              {filters.category || activeFilterCount > 0 ? "Filtered view" : "All plans"}
+            </span>
+          </div>
 
           <section className="space-y-6">
             {plansQuery.isLoading ? (
@@ -293,11 +360,11 @@ function PlansPage() {
         </div>
       </section>
 
-      <Dialog open={mobileFiltersOpen} onClose={setMobileFiltersOpen} className="relative z-50 lg:hidden">
+      <Dialog open={mobileFiltersOpen} onClose={setMobileFiltersOpen} className="relative z-50 md:hidden">
         <DialogBackdrop className="fixed inset-0 bg-slate-950/35 backdrop-blur-sm" />
         <div className="fixed inset-0 flex items-end justify-center p-4">
           <DialogPanel className="w-full max-w-lg rounded-[var(--radius-xl)] bg-[color:var(--color-surface)] p-4">
-            <FilterPanel filters={filters} onChange={updateFilter} onClear={clearFilters} />
+            <FilterPanel mode="dialog" filters={filters} onChange={updateFilter} onClear={clearFilters} />
             <Button className="mt-4 w-full" variant="ghost" onClick={() => setMobileFiltersOpen(false)}>
               Close filters
             </Button>

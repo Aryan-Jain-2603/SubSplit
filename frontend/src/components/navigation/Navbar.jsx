@@ -49,19 +49,11 @@ function Navbar({ onOpenMobileNav }) {
           </button>
           <NavLink
             to="/plans"
-            className="inline-flex items-center gap-3 text-[color:var(--color-text-strong)]"
+            className="inline-flex items-center text-[color:var(--color-text-strong)]"
           >
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[color:var(--color-primary-strong)] text-lg font-semibold text-white shadow-[var(--shadow-soft)]">
-              C
-            </div>
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[color:var(--color-text-muted)]">
-                CraveCart
-              </p>
-              <p className="text-base font-semibold text-[color:var(--color-text-strong)]">
-                Subscription sharing
-              </p>
-            </div>
+            <span className="text-[1.75rem] font-extrabold tracking-[-0.05em] text-[color:var(--color-primary-strong)]">
+              SubSplit
+            </span>
           </NavLink>
         </div>
 
@@ -76,7 +68,7 @@ function Navbar({ onOpenMobileNav }) {
         <div className="flex items-center gap-3">
           {isAuthenticated ? (
             <>
-              <div className="hidden rounded-full border border-[color:var(--color-border)] bg-white px-4 py-2 text-right shadow-sm sm:block">
+              <div className="hidden rounded-full border border-[color:var(--color-border)] bg-white px-4 py-2 text-center shadow-sm sm:block">
                 <p className="text-xs font-medium uppercase tracking-[0.2em] text-[color:var(--color-text-muted)]">
                   Signed in
                 </p>

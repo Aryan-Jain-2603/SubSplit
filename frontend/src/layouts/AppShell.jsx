@@ -32,7 +32,7 @@ function AppShell() {
   );
 
   return (
-    <div className="min-h-screen bg-[color:var(--color-background)] text-[color:var(--color-text)]">
+    <div className="flex min-h-screen flex-col bg-[color:var(--color-background)] text-[color:var(--color-text)]">
       <div className="pointer-events-none fixed inset-x-0 top-0 -z-10 h-[32rem] bg-[radial-gradient(circle_at_top,rgba(86,111,255,0.18),transparent_54%),radial-gradient(circle_at_top_right,rgba(16,185,129,0.12),transparent_28%)]" />
       <Navbar onOpenMobileNav={() => setMobileNavOpen(true)} />
       <MobileNavDialog
@@ -51,11 +51,11 @@ function AppShell() {
       >
         <Outlet />
       </main>
-      <footer className="border-t border-[color:var(--color-border)] bg-white/80">
+      <footer className="border-t border-[color:var(--color-border)] bg-white/80 backdrop-blur">
         <div className="mx-auto flex w-full max-w-7xl flex-col gap-3 px-4 py-8 text-sm text-[color:var(--color-text-muted)] sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
-          <p>CraveCart is migrating to a faster, component-driven React frontend.</p>
+          <p>SubSplit helps people share subscription access with clear pricing and plan details.</p>
           <p className="font-medium text-[color:var(--color-text-strong)]">
-            Session auth stays on Express. UI moves here.
+            Built on React with the current Express session flow underneath.
           </p>
         </div>
       </footer>
