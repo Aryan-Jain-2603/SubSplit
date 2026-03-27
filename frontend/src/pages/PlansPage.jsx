@@ -153,139 +153,145 @@ function PlansPage() {
 
   return (
     <div className="space-y-8">
-      <PageHeader
-        eyebrow="Browse plans"
-        title="Discover shared subscriptions without losing the details that matter."
-        description="Search, filter, compare, predict, and join from one consistent marketplace screen. Owners get fast management actions without leaving the browse context."
-        actions={
-          <>
-            <Button variant="secondary" onClick={() => setMobileFiltersOpen(true)} className="lg:hidden">
-              <FunnelIcon className="h-4 w-4" />
-              Filters
-            </Button>
-            {isAuthenticated ? (
-              <Button asChild>
-                <Link to="/plans/new">
-                  <PlusIcon className="h-4 w-4" />
-                  Create plan
-                </Link>
+      <section className="px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12">
+        <PageHeader
+          eyebrow="Browse plans"
+          title="Discover shared subscriptions without losing the details that matter."
+          description="Search, filter, compare, predict, and join from one consistent marketplace screen. Owners get fast management actions without leaving the browse context."
+          actions={
+            <>
+              <Button
+                variant="secondary"
+                onClick={() => setMobileFiltersOpen(true)}
+                className="lg:hidden"
+              >
+                <FunnelIcon className="h-4 w-4" />
+                Filters
               </Button>
-            ) : (
-              <Button asChild>
-                <Link to="/signup">Create account</Link>
-              </Button>
-            )}
-          </>
-        }
-      />
+              {isAuthenticated ? (
+                <Button asChild>
+                  <Link to="/plans/new">
+                    <PlusIcon className="h-4 w-4" />
+                    Create plan
+                  </Link>
+                </Button>
+              ) : (
+                <Button asChild>
+                  <Link to="/signup">Create account</Link>
+                </Button>
+              )}
+            </>
+          }
+        />
+      </section>
 
-      <div className="space-y-5">
+      <section className="space-y-5 px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12">
         <SearchBar value={searchValue} onChange={setSearchValue} />
         <CategoryChips
           categories={PLAN_CATEGORIES}
           activeCategory={filters.category}
           onSelect={(value) => updateFilter("category", value)}
         />
-      </div>
+      </section>
 
-      <div className="grid gap-6 lg:grid-cols-[18rem_minmax(0,1fr)] lg:items-start">
-        <aside className="hidden lg:block">
-          <div className="sticky top-24">
-            <FilterPanel filters={filters} onChange={updateFilter} onClear={clearFilters} />
-          </div>
-        </aside>
+      <section className="px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12">
+        <div className="grid gap-6 xl:grid-cols-[20rem_minmax(0,1fr)] xl:items-start 2xl:grid-cols-[22rem_minmax(0,1fr)]">
+          <aside className="hidden xl:block">
+            <div className="sticky top-24">
+              <FilterPanel filters={filters} onChange={updateFilter} onClear={clearFilters} />
+            </div>
+          </aside>
 
-        <section className="space-y-6">
-          {plansQuery.isLoading ? (
-            <LoadingState
-              title="Loading plans"
-              description="We are preparing the latest subscription marketplace results."
-            />
-          ) : plansQuery.isError ? (
-            <EmptyState
-              title="Could not load plans"
-              description={plansQuery.error.message}
-              action={
-                <Button onClick={() => plansQuery.refetch()}>Try again</Button>
-              }
-            />
-          ) : plans.length === 0 ? (
-            <EmptyState
-              title="No plans matched your filters"
-              description="Try adjusting search, category, or availability to broaden the marketplace results."
-              action={
-                <Button variant="secondary" onClick={clearFilters}>
-                  Reset filters
-                </Button>
-              }
-            />
-          ) : (
-            <PlanGrid>
-              {plans.map((plan) => {
-                const predictionState = predictions[plan._id] || {};
+          <section className="space-y-6">
+            {plansQuery.isLoading ? (
+              <LoadingState
+                title="Loading plans"
+                description="We are preparing the latest subscription marketplace results."
+              />
+            ) : plansQuery.isError ? (
+              <EmptyState
+                title="Could not load plans"
+                description={plansQuery.error.message}
+                action={<Button onClick={() => plansQuery.refetch()}>Try again</Button>}
+              />
+            ) : plans.length === 0 ? (
+              <EmptyState
+                title="No plans matched your filters"
+                description="Try adjusting search, category, or availability to broaden the marketplace results."
+                action={
+                  <Button variant="secondary" onClick={clearFilters}>
+                    Reset filters
+                  </Button>
+                }
+              />
+            ) : (
+              <PlanGrid>
+                {plans.map((plan) => {
+                  const predictionState = predictions[plan._id] || {};
 
-                return (
-                  <PlanCard
-                    key={plan._id}
-                    plan={plan}
-                    prediction={predictionState.value}
-                    predictionPending={predictionState.isPending}
-                    predictionError={predictionState.error}
-                    footer={
-                      <div className="space-y-3">
-                        {plan.isOwner ? (
-                          <div className="grid grid-cols-2 gap-3">
-                            <Button variant="secondary" asChild>
-                              <Link to={`/plans/${plan._id}/edit`}>Edit</Link>
+                  return (
+                    <PlanCard
+                      key={plan._id}
+                      plan={plan}
+                      prediction={predictionState.value}
+                      predictionPending={predictionState.isPending}
+                      predictionError={predictionState.error}
+                      footer={
+                        <div className="space-y-3">
+                          {plan.isOwner ? (
+                            <div className="grid grid-cols-2 gap-3">
+                              <Button variant="secondary" asChild>
+                                <Link to={`/plans/${plan._id}/edit`}>Edit</Link>
+                              </Button>
+                              <Button variant="danger" onClick={() => setPlanToDelete(plan)}>
+                                Delete
+                              </Button>
+                            </div>
+                          ) : !isAuthenticated ? (
+                            <Button className="w-full" asChild>
+                              <Link to="/login" state={{ redirectTo }}>
+                                Sign in to join
+                              </Link>
                             </Button>
-                            <Button variant="danger" onClick={() => setPlanToDelete(plan)}>
-                              Delete
-                            </Button>
-                          </div>
-                        ) : !isAuthenticated ? (
-                          <Button className="w-full" asChild>
-                            <Link to="/login" state={{ redirectTo }}>
-                              Sign in to join
-                            </Link>
-                          </Button>
-                        ) : (
-                          <>
-                            <Button
-                              className="w-full"
-                              variant="secondary"
-                              onClick={() => handlePrediction(plan)}
-                              disabled={predictionState.isPending}
-                            >
-                              <SparklesIcon className="h-4 w-4" />
-                              {predictionState.isPending ? "Checking..." : "Is it worth it?"}
-                            </Button>
-                            <PaymentButton
-                              className="w-full"
-                              amount={plan.price}
-                              description={`Join ${plan.name}`}
-                              prefill={{
-                                name: user?.username,
-                                email: user?.email,
-                              }}
-                              razorpayKeyId={configQuery.data?.razorpayKeyId}
-                              createOrder={createPaymentOrder}
-                              onPaymentAuthorized={() => handleJoin(plan)}
-                              onError={(error) => showFlash(error.message, "error")}
-                              disabled={plan.slots < 1}
-                            >
-                              {plan.slots < 1 ? "No slots left" : "Join plan"}
-                            </PaymentButton>
-                          </>
-                        )}
-                      </div>
-                    }
-                  />
-                );
-              })}
-            </PlanGrid>
-          )}
-        </section>
-      </div>
+                          ) : (
+                            <>
+                              <Button
+                                className="w-full"
+                                variant="secondary"
+                                onClick={() => handlePrediction(plan)}
+                                disabled={predictionState.isPending}
+                              >
+                                <SparklesIcon className="h-4 w-4" />
+                                {predictionState.isPending ? "Checking..." : "Is it worth it?"}
+                              </Button>
+                              <PaymentButton
+                                className="w-full"
+                                amount={plan.price}
+                                description={`Join ${plan.name}`}
+                                prefill={{
+                                  name: user?.username,
+                                  email: user?.email,
+                                }}
+                                razorpayKeyId={configQuery.data?.razorpayKeyId}
+                                createOrder={createPaymentOrder}
+                                onPaymentAuthorized={() => handleJoin(plan)}
+                                onError={(error) => showFlash(error.message, "error")}
+                                disabled={plan.slots < 1}
+                              >
+                                {plan.slots < 1 ? "No slots left" : "Join plan"}
+                              </PaymentButton>
+                            </>
+                          )}
+                        </div>
+                      }
+                    />
+                  );
+                })}
+              </PlanGrid>
+            )}
+          </section>
+        </div>
+      </section>
 
       <Dialog open={mobileFiltersOpen} onClose={setMobileFiltersOpen} className="relative z-50 lg:hidden">
         <DialogBackdrop className="fixed inset-0 bg-slate-950/35 backdrop-blur-sm" />
@@ -304,9 +310,7 @@ function PlansPage() {
         onClose={() => setPlanToDelete(null)}
         title="Delete this plan?"
         description={
-          planToDelete
-            ? `This will remove ${planToDelete.name} from your hosted plans.`
-            : ""
+          planToDelete ? `This will remove ${planToDelete.name} from your hosted plans.` : ""
         }
         confirmLabel="Delete plan"
         onConfirm={() => deleteMutation.mutate(planToDelete._id)}

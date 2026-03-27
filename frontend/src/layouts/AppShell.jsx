@@ -1,13 +1,16 @@
 import { useMemo, useState } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import Navbar from "../components/navigation/Navbar";
 import MobileNavDialog from "../components/navigation/MobileNavDialog";
 import FlashBanner from "../components/feedback/FlashBanner";
 import { useAuth } from "../app/useAuth";
+import { cn } from "../lib/utils";
 
 function AppShell() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const { isAuthenticated } = useAuth();
+  const location = useLocation();
+  const isPlansRoute = location.pathname === "/plans";
 
   const links = useMemo(
     () =>
@@ -38,7 +41,14 @@ function AppShell() {
         links={links}
       />
       <FlashBanner />
-      <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col px-4 py-8 sm:px-6 lg:px-8">
+      <main
+        className={cn(
+          "flex w-full flex-1 flex-col py-8",
+          isPlansRoute
+            ? "max-w-none px-0"
+            : "mx-auto max-w-7xl px-4 sm:px-6 lg:px-8",
+        )}
+      >
         <Outlet />
       </main>
       <footer className="border-t border-[color:var(--color-border)] bg-white/80">
