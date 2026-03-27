@@ -3,11 +3,18 @@
 // const { listingSchema, reviewSchema } = require("./schema.js");
 // const Review = require("./models/review.js");
 const Sub = require("./models/sub.js");
+const { expectsJson } = require("./util/http.js");
 
 module.exports.isLoggedIn = (req, res, next) => {
   if (!req.isAuthenticated()) {
     req.session.redirectURL = req.originalUrl;
-    req.flash("error", "You must be logged in to create Listing");
+    const message = "You must be logged in to continue";
+
+    if (expectsJson(req)) {
+      return res.status(401).json({ message });
+    }
+
+    req.flash("error", message);
     return res.redirect("/login");
   }
   next();
@@ -23,8 +30,23 @@ module.exports.isLoggedIn = (req, res, next) => {
 module.exports.isOwner = async (req, res, next) => {
   let { id } = req.params;
   let listing = await Sub.findById(id);
+  if (!listing) {
+    if (expectsJson(req)) {
+      return res.status(404).json({ message: "Plan not found" });
+    }
+
+    req.flash("error", "Plan not found");
+    return res.redirect("/mysub");
+  }
+
   if (!listing.owner._id.equals(res.locals.currUser._id)) {
-    req.flash("error", "you dont have access to edit this Lisitng");
+    const message = "You do not have access to edit this listing";
+
+    if (expectsJson(req)) {
+      return res.status(403).json({ message });
+    }
+
+    req.flash("error", message);
     return res.redirect(`/mysub/${id}`);
   }
   next();

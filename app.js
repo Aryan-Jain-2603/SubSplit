@@ -19,8 +19,11 @@ const { isLoggedIn, isOwner } = require("./middleware.js");
 const ExpressError = require("./util/ExpressError.js");
 const razorpay = require("./util/razorpay.js");
 const { PythonShell } = require('python-shell');
+const { expectsJson, sanitizeUser } = require("./util/http.js");
 
 const cors = require('cors');
+
+const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || "http://localhost:5173";
 
 const store = MongoStore.create({
   mongoUrl: "mongodb://127.0.0.1:27017/SubSplitfinal",
@@ -39,6 +42,7 @@ const sessionOptions = {
     expires: Date.now() + 3 * 24 * 60 * 60 * 1000,
     maxAge: 3 * 24 * 60 * 60 * 1000,
     httpOnly: true,
+    sameSite: "lax",
   },
 };
 
@@ -53,8 +57,87 @@ async function main() {
   await mongoose.connect(mongoURL);
 }
 
+async function handleCurrentUser(req, res) {
+  if (!req.isAuthenticated()) {
+    return res.status(401).json({ user: null, message: "Not authenticated" });
+  }
 
-app.use(cors());
+  const user = await User.findById(req.user._id);
+
+  return res.json({
+    user: sanitizeUser(user),
+  });
+}
+
+async function handleCreateOrder(req, res) {
+  const { amount } = req.body;
+
+  if (!amount) {
+    return res.status(400).json({ success: false, message: "Amount required" });
+  }
+
+  const options = {
+    amount: parseInt(amount, 10) * 100,
+    currency: "INR",
+    receipt: `receipt_order_${Date.now()}`,
+  };
+
+  try {
+    const order = await razorpay.orders.create(options);
+    return res.json({ success: true, order });
+  } catch (err) {
+    console.error("Razorpay Order Creation Error:", err);
+    return res.status(500).json({ success: false, message: "Order creation failed" });
+  }
+}
+
+async function handleUpdateWallet(req, res) {
+  const { amount } = req.body;
+
+  if (!req.isAuthenticated()) {
+    return res.status(401).json({ success: false, message: "Not logged in" });
+  }
+
+  try {
+    const user = await User.findById(req.user._id);
+    user.money = (user.money || 0) + parseInt(amount, 10);
+    await user.save();
+
+    return res.json({
+      success: true,
+      message: "Wallet updated successfully",
+      user: sanitizeUser(user),
+    });
+  } catch (err) {
+    console.error("Failed to update wallet:", err);
+    return res.status(500).json({ success: false, message: "Server error" });
+  }
+}
+
+async function handlePredict(req, res) {
+  const { price, slots, type, categories } = req.body;
+  const options = {
+    mode: "json",
+    pythonOptions: ["-u"],
+    scriptPath: "./",
+    args: [price, slots, type, categories],
+  };
+
+  try {
+    const results = await PythonShell.run("predict_plan.py", options);
+    return res.json(results[0]);
+  } catch (err) {
+    console.error("Prediction error:", err);
+    return res.status(500).json({ error: "Prediction failed" });
+  }
+}
+
+app.use(
+  cors({
+    origin: FRONTEND_ORIGIN,
+    credentials: true,
+  })
+);
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -80,6 +163,7 @@ app.use((req, res, next) => {
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
   res.locals.currUser = req.user;
+  res.locals.redirectURL = req.session.redirectURL;
   next();
 });
 
@@ -88,6 +172,31 @@ app.get("/", (req, res) => {
 });
 
 app.get("/home", SubController.index);
+
+app.get("/me", handleCurrentUser);
+app.get("/api/auth/me", handleCurrentUser);
+
+app.get("/api/config", (req, res) => {
+  return res.json({
+    razorpayKeyId: process.env.RAZORPAY_KEY_ID,
+  });
+});
+
+app.get("/api/plans", wrapAsync(SubController.listJsonPlans));
+app.get("/api/plans/:id", isLoggedIn, isOwner, wrapAsync(SubController.getJsonPlan));
+app.post("/api/plans", isLoggedIn, wrapAsync(SubController.createJsonPlan));
+app.put("/api/plans/:id", isLoggedIn, isOwner, wrapAsync(SubController.updateJsonPlan));
+app.delete("/api/plans/:id", isLoggedIn, isOwner, wrapAsync(SubController.deleteJsonPlan));
+app.post("/api/plans/:id/join", isLoggedIn, wrapAsync(SubController.joinJsonPlan));
+app.get("/api/dashboard/subscriptions", isLoggedIn, wrapAsync(SubController.getDashboardJson));
+app.get("/api/profile", isLoggedIn, async (req, res) => {
+  const currentUser = await User.findById(req.user._id);
+
+  return res.json({
+    user: sanitizeUser(currentUser),
+    razorpayKeyId: process.env.RAZORPAY_KEY_ID,
+  });
+});
 
 app.post("/home", isLoggedIn, SubController.addPlan);
 
@@ -130,6 +239,7 @@ app.get("/signup", (req, res) => {
 });
 
 app.post("/signup", wrapAsync(userController.signup));
+app.post("/api/auth/signup", wrapAsync(userController.signup));
 
 app.post("/add-money", isLoggedIn, wrapAsync(userController.addMoney));
 
@@ -139,78 +249,70 @@ app.get("/login", (req, res) => {
 
 app.post(
   "/login",
-  passport.authenticate("local", {
-    failureRedirect: "/login",
-    failureFlash: true,
-  }),
-  wrapAsync(userController.login)
+  (req, res, next) => {
+    passport.authenticate("local", (err, user, info = {}) => {
+      if (err) {
+        return next(err);
+      }
+
+      if (!user) {
+        const message = info.message || "Invalid username or password";
+
+        if (expectsJson(req)) {
+          return res.status(401).json({ message });
+        }
+
+        req.flash("error", message);
+        return res.redirect("/login");
+      }
+
+      req.logIn(user, (loginErr) => {
+        if (loginErr) {
+          return next(loginErr);
+        }
+
+        return userController.login(req, res, next);
+      });
+    })(req, res, next);
+  }
+);
+
+app.post(
+  "/api/auth/login",
+  (req, res, next) => {
+    passport.authenticate("local", (err, user, info = {}) => {
+      if (err) {
+        return next(err);
+      }
+
+      if (!user) {
+        const message = info.message || "Invalid username or password";
+        return res.status(401).json({ message });
+      }
+
+      req.logIn(user, (loginErr) => {
+        if (loginErr) {
+          return next(loginErr);
+        }
+
+        return userController.login(req, res, next);
+      });
+    })(req, res, next);
+  }
 );
 
 app.get("/logout", userController.logout);
+app.post("/logout", userController.logout);
+app.post("/api/auth/logout", userController.logout);
 
-app.post("/create-order", async (req, res) => {
-  const { amount } = req.body;
+app.post("/create-order", handleCreateOrder);
+app.post("/api/payment/order", handleCreateOrder);
 
-  if (!amount) {
-    return res.status(400).json({ success: false, message: "Amount required" });
-  }
+app.post("/update-wallet", handleUpdateWallet);
+app.post("/api/wallet/top-up", handleUpdateWallet);
 
-  const options = {
-    amount: parseInt(amount) * 100,
-    currency: "INR",
-    receipt: `receipt_order_${Date.now()}`
-  };
-
-  try {
-    const order = await razorpay.orders.create(options);
-    res.json({ success: true, order });
-  } catch (err) {
-    console.error("Razorpay Order Creation Error:", err);
-    res.status(500).json({ success: false, message: "Order creation failed" });
-  }
-});
-
-
-
-
-app.post("/update-wallet", async (req, res) => {
-  const { amount } = req.body;
-
-  if (!req.isAuthenticated()) {
-    return res.status(401).json({ success: false, message: "Not logged in" });
-  }
-
-  try {
-    const user = await User.findById(req.user._id);
-    user.money = (user.money || 0) + parseInt(amount);
-    await user.save();
-
-    res.json({ success: true });
-  } catch (err) {
-    console.error("Failed to update wallet:", err);
-    res.status(500).json({ success: false, message: "Server error" });
-  }
-});
-
-app.post('/predict', (req, res) => {
-  const { price, slots, type, categories } = req.body;
-  console.log('Received data:', req.body);
-
-  const options = {
-    mode: 'json',
-    pythonOptions: ['-u'],
-    scriptPath: './',
-    args: [price, slots, type, categories]
-  };
-
-  PythonShell.run('predict_plan.py', options).then(results => {
-    console.log('Prediction result from Python:', results);
-    res.json(results[0]); // Because results is an array of JSON objects
-  }).catch(err => {
-    console.error('Prediction error:', err);
-    res.status(500).json({ error: 'Prediction failed' });
-  });
-});
+app.post("/predict", handlePredict);
+app.post("/api/predict", handlePredict);
 
 
 
@@ -220,6 +322,10 @@ app.all("*", (req, res, next) => {
 
 app.use((err, req, res, next) => {
   let { statuscode = 500, message = "unknown err occoured" } = err;
+  if (expectsJson(req)) {
+    return res.status(statuscode).json({ message });
+  }
+
   res.status(statuscode).render("listings/err.ejs", { message });
 });
 
