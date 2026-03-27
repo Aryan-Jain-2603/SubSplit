@@ -1,4 +1,6 @@
 const User = require("../models/user");
+const { expectsJson, sanitizeUser } = require("../util/http");
+
 module.exports.signup = async (req, res) => {
   try {
     let { username, email, password } = req.body;
@@ -6,24 +8,56 @@ module.exports.signup = async (req, res) => {
     let result = await User.register(createdUser, password);
     req.login(result, (err) => {
       if (err) {
-        return next(err);
+        if (expectsJson(req)) {
+          return res.status(500).json({ message: "Failed to create session" });
+        }
+
+        return res.redirect("/signup");
       }
-      req.flash("success", "You have been logged In successfully");
-      res.redirect("/home");
+
+      const message = "You have been logged in successfully";
+
+      if (expectsJson(req)) {
+        req.session.redirectURL = undefined;
+        return res.status(201).json({
+          message,
+          user: sanitizeUser(result),
+        });
+      }
+
+      req.flash("success", message);
+      return res.redirect("/home");
     });
   } catch (err) {
+    if (expectsJson(req)) {
+      return res.status(400).json({ message: err.message });
+    }
+
     req.flash("error", err.message);
-    res.redirect("/signup");
+    return res.redirect("/signup");
   }
 };
 
 module.exports.login = async (req, res) => {
-  req.flash("success", "Welcome back User, Login successful");
-  if (!res.locals.redirectURL) {
-    res.redirect("/home");
-    return;
+  const message = "Welcome back. Login successful";
+
+  if (expectsJson(req)) {
+    req.session.redirectURL = undefined;
+    return res.json({
+      message,
+      user: sanitizeUser(req.user),
+    });
   }
-  res.redirect(res.locals.redirectURL);
+
+  req.flash("success", message);
+  if (!res.locals.redirectURL) {
+    return res.redirect("/home");
+  }
+
+  const redirectURL = res.locals.redirectURL;
+  req.session.redirectURL = undefined;
+
+  return res.redirect(redirectURL);
 };
 
 module.exports.logout = (req, res, next) => {
@@ -31,8 +65,17 @@ module.exports.logout = (req, res, next) => {
     if (err) {
       return next(err);
     }
-    req.flash("success", "You have been logged out successfully");
-    res.redirect("/home");
+
+    req.session.redirectURL = undefined;
+
+    const message = "You have been logged out successfully";
+
+    if (expectsJson(req)) {
+      return res.json({ message });
+    }
+
+    req.flash("success", message);
+    return res.redirect("/home");
   });
 };
 
